@@ -78,39 +78,41 @@ try {
 			}
 		}
 	}
+	$data_json = json_encode($retData,JSON_NUMERIC_CHECK);
 } catch (Exception $e) {
   // if call data error
   //die($e->getCode());
   //die($e->getMessage());
 	if($e->getCode()==403)
 	{
-  		/*do {
-  		printf("%s (%d) [%s]\n", $e->getMessage(), $e->getCode(), get_class($e));
-  		$text_message = explode(")",$e->getMessage());
-  		} while($e = $e->getPrevious());*/
-		$text_message = explode(")",$e->getMessage());
-		$text = trim($text_message[1]);
-		switch($text)
-		{
-			case 'User does not have sufficient permissions for this profile.':
-									//error
-									echo $e->getMessage();
-								break;
-								case 'Access Not Configured':
-									//error
-									echo $e->getMessage();
-								break;
-								default:
-								  //error
-									echo $e->getMessage();
-								break;
-							}
-							die();
-						}
-						else{
-							die($e->getMessage());
-						}
-					}
+  	/*do {
+  	printf("%s (%d) [%s]\n", $e->getMessage(), $e->getCode(), get_class($e));
+  	$text_message = explode(")",$e->getMessage());
+  	} while($e = $e->getPrevious());*/
+	$text_message = explode(")",$e->getMessage());
+	$text = trim($text_message[1]);
+	switch($text)
+	{
+		case 'User does not have sufficient permissions for this profile.':
+			//error
+			echo $e->getMessage();
+		break;
+		case 'Access Not Configured':
+			//error
+			echo $e->getMessage();
+		break;
+		default:
+			//error
+			echo $e->getMessage();
+		break;
+	}
+	die();
+	}
+	else
+	{
+		die($e->getMessage());
+	}
+}
 ?>
 <div id="line_chart"></div>
 <script>
@@ -121,6 +123,7 @@ $(function(){
   line_chart();
 });
 function drawChart2() {
+	//get json array data query
   var data = google.visualization.arrayToDataTable(<?=$data_json?>);
   var options = {
     width: 'auto',
