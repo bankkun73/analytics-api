@@ -43,11 +43,14 @@ if($client->isAccessTokenExpired()) {
 	header("Location: ".$scriptUri);
 }
 try {
-    $projectId = $data[0]['profile_id'];
+    $projectId = $data[0]['profile_id']; //profile id
+    	
 	if(isset($_GET['from']) && isset($_GET['to'])){
+	//if call get select date show data
 		$from = $_GET['from'];
 		$to = $_GET['to'];
 	}else{
+	//default call get date
 		$day = date("d");
 		$month = date("m");
 		$year = date("Y");
@@ -64,31 +67,32 @@ try {
     $data = $service->data_ga->get('ga:'.$projectId, $from, $to, $metrics, array('dimensions' => $dimensions));
     
     $retData = array();
-					$dataRow = array();
-					$retData[0] = array('Month','Visits','Pageviews','UniqueViews','New Visits');
-					foreach($data as $key => $row){
-						if($key=="rows"){
-							foreach($row as $key => $row1){
-								$data = $row1[1]."/".$row1[2]."/".$row1[3];
-								$retData[$key+1] = array($data,$row1[4],$row1[5],$row1[6],$row1[7]);
-							}
-						}
-					}
+    $dataRow = array();
+    $retData[0] = array('Month','Visits','Pageviews','UniqueViews','New Visits');
+	foreach($data as $key => $row){
+	//loob date query to json 
+		if($key=="rows"){
+			foreach($row as $key => $row1){
+				$data = $row1[1]."/".$row1[2]."/".$row1[3];
+				$retData[$key+1] = array($data,$row1[4],$row1[5],$row1[6],$row1[7]);
+			}
+		}
+	}
 } catch (Exception $e) {
   // if call data error
-						//die($e->getCode());
-						//die($e->getMessage());
-						if($e->getCode()==403)
-						{
-  							/*do {
-  								printf("%s (%d) [%s]\n", $e->getMessage(), $e->getCode(), get_class($e));
-  								$text_message = explode(")",$e->getMessage());
-  							} while($e = $e->getPrevious());*/
-							$text_message = explode(")",$e->getMessage());
-							$text = trim($text_message[1]);
-							switch($text)
-							{
-								case 'User does not have sufficient permissions for this profile.':
+  //die($e->getCode());
+  //die($e->getMessage());
+	if($e->getCode()==403)
+	{
+  		/*do {
+  		printf("%s (%d) [%s]\n", $e->getMessage(), $e->getCode(), get_class($e));
+  		$text_message = explode(")",$e->getMessage());
+  		} while($e = $e->getPrevious());*/
+		$text_message = explode(")",$e->getMessage());
+		$text = trim($text_message[1]);
+		switch($text)
+		{
+			case 'User does not have sufficient permissions for this profile.':
 									//error
 									echo $e->getMessage();
 								break;
